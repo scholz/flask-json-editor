@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>JSON Form</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            background-color: #f2f2f2;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        form {
+            width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        label {
+            
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #444;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+        }
+        input[type="submit"] {
+            background-color: #00bfff;
+            color: #fff;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Json-flask-editor</h1>
+
+    <form action="/update" method="post">
+        {# Define a recursive function to render the input fields for the JSON structure #}
+        {% macro render_inputs(data, prefix) %}
+            {# Iterate over the elements of the JSON structure #}
+            {% for key, value in data.items() %}
+                {# Check the type of the current element #}
+                {% if value is mapping %}
+                    {# If the element is a dictionary (mapping), recursively call the function to render its elements #}
+                    {{ render_inputs(value, prefix + key + '.') }}
+                {% else %}
+                    {# If the element is not a dictionary, render a regular input field #}
+                    <label for="{{ prefix + key }}">{{ prefix + key }}:</label>
+                    <input type="text" id="{{ prefix + key }}" name="{{ prefix + key }}" value="{{ value }}">
+                    <br><br>
+                {% endif %}
+            {% endfor %}
+        {% endmacro %}
+
+        {# Call the recursive function to render the input fields for the data #}
+        {{ render_inputs(data, '') }}
+
+        <input type="submit" value="Update Json">
+    </form>
+
+
+
+</body>
+</html>
